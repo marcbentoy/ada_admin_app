@@ -33,40 +33,44 @@ class _ViewRecordsScreenState extends State<ViewRecordsScreen> {
 
     records.clear();
 
-    final responses =
-        await pb.collection('records').getFullList(sort: '-created,-entryDate');
+    await pb
+        .collection('records')
+        .getFullList(sort: '-created')
+        .then((responseData) async {
+      for (var response in responseData) {
+        final studenData =
+            await pb.collection('students').getOne(response.data['student']);
 
-    for (var response in responses) {
-      final studenData =
-          await pb.collection('students').getOne(response.data['student']);
+        records.add(EntryModel(
+          isOut: response.data["entry"] == "in" ? false : true,
+          roomName: response.data["room"],
+          studentId: studenData.data["schoolId"],
+          studentName: studenData.data["name"],
+          entryDate: DateTime.parse(response.data["entryDate"] == ""
+                  ? response.created
+                  : response.data["entryDate"])
+              .toLocal(),
+        ));
+      }
 
-      records.add(EntryModel(
-        isOut: response.data["entry"] == "in" ? false : true,
-        roomName: response.data["room"],
-        studentId: studenData.data["schoolId"],
-        studentName: studenData.data["name"],
-        entryDate: DateTime.parse(response.data["entryDate"] == ""
-            ? response.created
-            : response.data["entryDate"]),
-      ));
-    }
+      setState(() {
+        records;
+      });
 
-    setState(() {
-      records;
-    });
+      heatMapData.clear();
+      for (var element in records) {
+        heatMapData[
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(element.entryDate))
+                .toLocal()] = (heatMapData[DateTime.parse(
+                        DateFormat("yyyy-MM-dd").format(element.entryDate))
+                    .toLocal()] ??
+                0) +
+            1;
+      }
 
-    heatMapData.clear();
-    for (var element in records) {
-      heatMapData[DateTime.parse(
-          DateFormat("yyyy-MM-dd").format(element.entryDate))] = (heatMapData[
-                  DateTime.parse(
-                      DateFormat("yyyy-MM-dd").format(element.entryDate))] ??
-              0) +
-          1;
-    }
-
-    setState(() {
-      heatMapData;
+      setState(() {
+        heatMapData;
+      });
     });
   }
 
