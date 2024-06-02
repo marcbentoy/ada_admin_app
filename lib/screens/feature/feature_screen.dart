@@ -31,7 +31,9 @@ class FeatureScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) {
-                        return const ViewRecordsScreen();
+                        return const ViewRecordsScreen(
+                          studentId: 'all',
+                        );
                       },
                     ),
                   );

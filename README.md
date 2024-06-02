@@ -1,3 +1,15 @@
-# ada_admin_app
+# ADA - Automatic Digital Attendance
 
-A new Flutter project.
+## System Setup Guide
+
+### Preparatory 
+
+Before proceeding, you need to download the following:
+1. Mobile App
+2. Pocketbase 
+
+### Mobile App
+
+### Pocketbase Server
+
+### ADA Device

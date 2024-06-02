@@ -9,7 +9,12 @@ import 'package:simple_heatmap_calendar/simple_heatmap_calendar.dart';
 import 'package:ada_admin_app/shared/constants.dart';
 
 class ViewRecordsScreen extends StatefulWidget {
-  const ViewRecordsScreen({super.key});
+  final String studentId;
+
+  const ViewRecordsScreen({
+    super.key,
+    required this.studentId,
+  });
 
   @override
   State<ViewRecordsScreen> createState() => _ViewRecordsScreenState();
@@ -33,9 +38,12 @@ class _ViewRecordsScreenState extends State<ViewRecordsScreen> {
 
     records.clear();
 
+    String listFilter =
+        widget.studentId != "all" ? "student=\"${widget.studentId}\"" : "";
+
     await pb
         .collection('records')
-        .getFullList(sort: '-created')
+        .getFullList(sort: '-created', filter: listFilter)
         .then((responseData) async {
       for (var response in responseData) {
         final studenData =
